@@ -178,3 +178,77 @@ func (q Querier) TotalPoolLiquidity(ctx sdk.Context, req queryproto.TotalPoolLiq
 		Liquidity: coins,
 	}, nil
 }
+
+// EstimateTradeAmountInAmountOutBasedOnPriceImpact returns the input and output amount of coins for a pool trade
+// based on twap value and maximum price impact.
+func (q Querier) EstimateTradeAmountInAmountOutBasedOnPriceImpact(
+	ctx sdk.Context,
+	req queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest,
+) (*queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse, error) {
+	if req.PoolId == 0 {
+		return nil, status.Error(codes.InvalidArgument, "Invalid Pool Id")
+	}
+
+	if req.FromCoin.Denom == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid base asset denom")
+	}
+
+	if req.ToCoinDenom == "" {
+		return nil, status.Error(codes.InvalidArgument, "invalid quote asset denom")
+	}
+
+	swapModule, err := q.K.GetPoolModule(ctx, req.PoolId)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	poolI, poolErr := swapModule.GetPool(ctx, req.PoolId)
+	if poolErr != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	spotPrice, err := swapModule.CalculateSpotPrice(ctx, req.PoolId, req.ToCoinDenom, req.FromCoin.Denom)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	priceDeviation := spotPrice.Sub(req.TwapPrice).Quo(req.TwapPrice)
+	adjustedMaxPriceImpact := req.MaxPriceImpact.Sub(priceDeviation)
+
+	if priceDeviation.GT(adjustedMaxPriceImpact) {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	currFromCoin := req.FromCoin
+	for {
+		tokenOut, err := swapModule.CalcOutAmtGivenIn(
+			ctx, poolI, currFromCoin, req.ToCoinDenom, poolI.GetSpreadFactor(ctx))
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		if tokenOut.IsZero() {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		currTradePrice := sdk.NewDec(tokenOut.Amount.Int64()).QuoInt(currFromCoin.Amount)
+		priceDeviation := spotPrice.Sub(currTradePrice).Quo(currTradePrice)
+
+		if priceDeviation.LTE(adjustedMaxPriceImpact) {
+			// Add slippage, this indicates the minimum number of tokens received from the trade.
+			amountOut := sdk.NewDecCoinFromCoin(tokenOut).Amount.Mul(sdk.OneDec().Sub(adjustedMaxPriceImpact))
+			amountOutCoin := sdk.NewCoin(req.ToCoinDenom, amountOut.TruncateInt())
+
+			return &queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse{
+				InputCoin:  currFromCoin,
+				OutputCoin: amountOutCoin,
+			}, nil
+		}
+
+		// Otherwise if PriceDeviation is greater than the maxPriceImpact we half the input amount and try again.
+		currFromCoin = sdk.NewCoin(currFromCoin.Denom, currFromCoin.Amount.Quo(sdk.NewInt(2)))
+		if currFromCoin.Amount.IsZero() {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+}
