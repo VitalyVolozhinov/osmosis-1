@@ -190,11 +190,11 @@ func (q Querier) EstimateTradeAmountInAmountOutBasedOnPriceImpact(
 	}
 
 	if req.FromCoin.Denom == "" {
-		return nil, status.Error(codes.InvalidArgument, "invalid base asset denom")
+		return nil, status.Error(codes.InvalidArgument, "invalid from coin denom")
 	}
 
 	if req.ToCoinDenom == "" {
-		return nil, status.Error(codes.InvalidArgument, "invalid quote asset denom")
+		return nil, status.Error(codes.InvalidArgument, "invalid to coin denom")
 	}
 
 	swapModule, err := q.K.GetPoolModule(ctx, req.PoolId)

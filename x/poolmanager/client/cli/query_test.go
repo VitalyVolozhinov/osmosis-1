@@ -4,6 +4,8 @@ import (
 	gocontext "context"
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/osmosis-labs/osmosis/v16/x/poolmanager/types"
 
 	"github.com/stretchr/testify/suite"
@@ -57,6 +59,18 @@ func (s *QueryTestSuite) TestQueriesNeverAlterState() {
 				Routes:   types.SwapAmountOutRoutes{{PoolId: 1, TokenInDenom: "bar"}},
 			},
 			&poolmanagerqueryproto.EstimateSwapExactAmountOutResponse{},
+		},
+		{
+			"Query estimate trade amount in amount out based on price impact",
+			"/osmosis.poolmanager.v1beta1.Query/EstimateTradeAmountInAmountOutBasedOnPriceImpact",
+			&poolmanagerqueryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest{
+				PoolId:         1,
+				FromCoin:       sdk.NewCoin("bar", sdk.NewInt(10)),
+				ToCoinDenom:    "baz",
+				MaxPriceImpact: sdk.MustNewDecFromStr("0.001"),
+				TwapPrice:      sdk.MustNewDecFromStr("1.02"),
+			},
+			&poolmanagerqueryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse{},
 		},
 	}
 

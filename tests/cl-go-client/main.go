@@ -53,7 +53,7 @@ const (
 const (
 	expectedPoolId           uint64 = 1
 	addressPrefix                   = "osmo"
-	localosmosisFromHomePath        = "/.osmosisd-local"
+	localosmosisFromHomePath        = "/.osmosisd"
 	consensusFee                    = "1500uosmo"
 	denom0                          = "uosmo"
 	denom1                          = "uusdc"

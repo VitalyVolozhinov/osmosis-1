@@ -211,7 +211,6 @@ message EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest {
 }
 
 message EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse {
-    // Define your response fields here
     cosmos.base.v1beta1.Coin input_coin = 1 [(gogoproto.nullable) = false];
     cosmos.base.v1beta1.Coin output_coin = 2 [(gogoproto.nullable) = false];
 }

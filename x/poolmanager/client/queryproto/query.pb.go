@@ -958,7 +958,6 @@ func (m *EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest) GetPoolId() ui
 }
 
 type EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse struct {
-	// Define your response fields here
 	InputCoin  types2.Coin `protobuf:"bytes,1,opt,name=input_coin,json=inputCoin,proto3" json:"input_coin"`
 	OutputCoin types2.Coin `protobuf:"bytes,2,opt,name=output_coin,json=outputCoin,proto3" json:"output_coin"`
 }

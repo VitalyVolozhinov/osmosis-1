@@ -174,7 +174,7 @@ func GetCmdEstimateTradeAmountInAmountOutBasedOnPriceImpact() (
 		Use:   "estimate-trade-amount-in-amount-out-based-on-price-impact  <fromCoin> <toCoinDenom> <poolId> <maxPriceImpact> <twapPrice>",
 		Short: "Query estimate-trade-amount-in-amount-out-based-on-price-impact",
 		Long: `{{.Short}} 
-		{{.CommandPrefix}} estimate-trade-amount-in-amount-out-based-on-price-impact 100uosmo stosmo 0.001 1.00`,
+		{{.CommandPrefix}} estimate-trade-amount-in-amount-out-based-on-price-impact 100uosmo stosmo  833 0.001 1.00`,
 		QueryFnName: "EstimateTradeAmountInAmountOutBasedOnPriceImpact",
 	}, &queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest{}
 }
