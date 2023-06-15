@@ -207,7 +207,7 @@ func (q Querier) EstimateTradeAmountInAmountOutBasedOnPriceImpact(
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	spotPrice, err := swapModule.CalculateSpotPrice(ctx, req.PoolId, req.ToCoinDenom, req.FromCoin.Denom)
+	spotPrice, err := swapModule.CalculateSpotPrice(ctx, req.PoolId, req.FromCoin.Denom, req.ToCoinDenom)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -232,16 +232,12 @@ func (q Querier) EstimateTradeAmountInAmountOutBasedOnPriceImpact(
 		}
 
 		currTradePrice := sdk.NewDec(tokenOut.Amount.Int64()).QuoInt(currFromCoin.Amount)
-		priceDeviation := spotPrice.Sub(currTradePrice).Quo(currTradePrice)
+		priceDeviation := currTradePrice.Sub(spotPrice).Quo(spotPrice).Abs()
 
 		if priceDeviation.LTE(adjustedMaxPriceImpact) {
-			// Add slippage, this indicates the minimum number of tokens received from the trade.
-			amountOut := sdk.NewDecCoinFromCoin(tokenOut).Amount.Mul(sdk.OneDec().Sub(adjustedMaxPriceImpact))
-			amountOutCoin := sdk.NewCoin(req.ToCoinDenom, amountOut.TruncateInt())
-
 			return &queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse{
 				InputCoin:  currFromCoin,
-				OutputCoin: amountOutCoin,
+				OutputCoin: tokenOut,
 			}, nil
 		}
 
