@@ -62,15 +62,15 @@ func (s *QueryTestSuite) TestQueriesNeverAlterState() {
 		},
 		{
 			"Query estimate trade amount in amount out based on price impact",
-			"/osmosis.poolmanager.v1beta1.Query/EstimateTradeAmountInAmountOutBasedOnPriceImpact",
-			&poolmanagerqueryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest{
+			"/osmosis.poolmanager.v1beta1.Query/EstimateTradeBasedOnPriceImpact",
+			&poolmanagerqueryproto.EstimateTradeBasedOnPriceImpactRequest{
 				PoolId:         1,
 				FromCoin:       sdk.NewCoin("bar", sdk.NewInt(10)),
 				ToCoinDenom:    "baz",
 				MaxPriceImpact: sdk.MustNewDecFromStr("0.001"),
 				TwapPrice:      sdk.MustNewDecFromStr("1.02"),
 			},
-			&poolmanagerqueryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse{},
+			&poolmanagerqueryproto.EstimateTradeBasedOnPriceImpactResponse{},
 		},
 	}
 

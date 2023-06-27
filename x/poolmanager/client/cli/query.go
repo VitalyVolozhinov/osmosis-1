@@ -29,7 +29,7 @@ func GetQueryCmd() *cobra.Command {
 	osmocli.AddQueryCmd(cmd, queryproto.NewQueryClient, GetCmdTotalPoolLiquidity)
 	osmocli.AddQueryCmd(cmd, queryproto.NewQueryClient, GetCmdAllPools)
 	osmocli.AddQueryCmd(cmd, queryproto.NewQueryClient, GetCmdPool)
-	osmocli.AddQueryCmd(cmd, queryproto.NewQueryClient, GetCmdEstimateTradeAmountInAmountOutBasedOnPriceImpact)
+	osmocli.AddQueryCmd(cmd, queryproto.NewQueryClient, GetCmdEstimateTradeBasedOnPriceImpact)
 
 	return cmd
 }
@@ -167,14 +167,14 @@ func GetCmdTotalPoolLiquidity() (*osmocli.QueryDescriptor, *queryproto.TotalPool
 	}, &queryproto.TotalPoolLiquidityRequest{}
 }
 
-func GetCmdEstimateTradeAmountInAmountOutBasedOnPriceImpact() (
-	*osmocli.QueryDescriptor, *queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest,
+func GetCmdEstimateTradeBasedOnPriceImpact() (
+	*osmocli.QueryDescriptor, *queryproto.EstimateTradeBasedOnPriceImpactRequest,
 ) {
 	return &osmocli.QueryDescriptor{
 		Use:   "estimate-trade-amount-in-amount-out-based-on-price-impact  <fromCoin> <toCoinDenom> <poolId> <maxPriceImpact> <twapPrice>",
 		Short: "Query estimate-trade-amount-in-amount-out-based-on-price-impact",
 		Long: `{{.Short}} 
 		{{.CommandPrefix}} estimate-trade-amount-in-amount-out-based-on-price-impact 100uosmo stosmo  833 0.001 1.00`,
-		QueryFnName: "EstimateTradeAmountInAmountOutBasedOnPriceImpact",
-	}, &queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest{}
+		QueryFnName: "EstimateTradeBasedOnPriceImpact",
+	}, &queryproto.EstimateTradeBasedOnPriceImpactRequest{}
 }

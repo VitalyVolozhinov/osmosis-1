@@ -120,13 +120,13 @@ func (q Querier) AllPools(grpcCtx context.Context,
 	return q.Q.AllPools(ctx, *req)
 }
 
-func (q Querier) EstimateTradeAmountInAmountOutBasedOnPriceImpact(grpcCtx context.Context,
-	req *queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactRequest,
-) (*queryproto.EstimateTradeAmountInAmountOutBasedOnPriceImpactResponse, error) {
+func (q Querier) EstimateTradeBasedOnPriceImpact(grpcCtx context.Context,
+	req *queryproto.EstimateTradeBasedOnPriceImpactRequest,
+) (*queryproto.EstimateTradeBasedOnPriceImpactResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 	ctx := sdk.UnwrapSDKContext(grpcCtx)
-	return q.Q.EstimateTradeAmountInAmountOutBasedOnPriceImpact(ctx, *req)
+	return q.Q.EstimateTradeBasedOnPriceImpact(ctx, *req)
 }
 
