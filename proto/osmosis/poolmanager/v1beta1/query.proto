@@ -85,13 +85,13 @@ service Query {
         "/osmosis/poolmanager/v1beta1/pools/total_liquidity";
   }
 
-  // EstimateTradeBasedOnPriceImpact returns an estimated trade based on price impact.
-  rpc EstimateTradeBasedOnPriceImpact(
-    EstimateTradeBasedOnPriceImpactRequest)
-    returns (EstimateTradeBasedOnPriceImpactResponse) {
-      option (google.api.http).get =
+  // EstimateTradeBasedOnPriceImpact returns an estimated trade based on price
+  // impact.
+  rpc EstimateTradeBasedOnPriceImpact(EstimateTradeBasedOnPriceImpactRequest)
+      returns (EstimateTradeBasedOnPriceImpactResponse) {
+    option (google.api.http).get =
         "/osmosis/poolmanager/v1beta1/{pool_id}/estimate_trade";
-    }
+  }
 }
 
 //=============================== Params
@@ -216,7 +216,7 @@ message TotalLiquidityResponse {
 
 //=============================== EstimateTradeBasedOnPriceImpact
 message EstimateTradeBasedOnPriceImpactRequest {
-  cosmos.base.v1beta1.Coin from_coin = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin from_coin = 1 [ (gogoproto.nullable) = false ];
   string to_coin_denom = 2;
   uint64 pool_id = 3;
   string max_price_impact = 4 [
@@ -230,6 +230,6 @@ message EstimateTradeBasedOnPriceImpactRequest {
 }
 
 message EstimateTradeBasedOnPriceImpactResponse {
-  cosmos.base.v1beta1.Coin input_coin = 1 [(gogoproto.nullable) = false];
-  cosmos.base.v1beta1.Coin output_coin = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin input_coin = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.v1beta1.Coin output_coin = 2 [ (gogoproto.nullable) = false ];
 }
