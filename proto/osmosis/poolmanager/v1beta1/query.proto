@@ -72,18 +72,26 @@ service Query {
         "/osmosis/poolmanager/pools/{pool_id}/prices";
   }
 
+  // TotalPoolLiquidity returns the total liquidity of the specified pool.
   rpc TotalPoolLiquidity(TotalPoolLiquidityRequest)
       returns (TotalPoolLiquidityResponse) {
     option (google.api.http).get =
         "/osmosis/poolmanager/v1beta1/pools/{pool_id}/total_pool_liquidity";
   }
 
+  // TotalLiquidity returns the total liquidity across all pools.
+  rpc TotalLiquidity(TotalLiquidityRequest) returns (TotalLiquidityResponse) {
+    option (google.api.http).get =
+        "/osmosis/poolmanager/v1beta1/pools/total_liquidity";
+  }
+
+  // EstimateTradeBasedOnPriceImpact returns an estimated trade based on price impact.
   rpc EstimateTradeBasedOnPriceImpact(
     EstimateTradeBasedOnPriceImpactRequest)
     returns (EstimateTradeBasedOnPriceImpactResponse) {
       option (google.api.http).get =
         "/osmosis/poolmanager/v1beta1/{pool_id}/estimate_trade";
-  }
+    }
 }
 
 //=============================== Params
@@ -182,7 +190,7 @@ message SpotPriceResponse {
   string spot_price = 1 [ (gogoproto.moretags) = "yaml:\"spot_price\"" ];
 }
 
-//=============================== PoolLiquidity
+//=============================== TotalPoolLiquidity
 message TotalPoolLiquidityRequest {
   uint64 pool_id = 1 [ (gogoproto.moretags) = "yaml:\"pool_id\"" ];
 }
@@ -195,22 +203,33 @@ message TotalPoolLiquidityResponse {
   ];
 }
 
+//=============================== TotalLiquidity
+message TotalLiquidityRequest {}
+
+message TotalLiquidityResponse {
+  repeated cosmos.base.v1beta1.Coin liquidity = 1 [
+    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins",
+    (gogoproto.moretags) = "yaml:\"liquidity\"",
+    (gogoproto.nullable) = false
+  ];
+}
+
 //=============================== EstimateTradeBasedOnPriceImpact
 message EstimateTradeBasedOnPriceImpactRequest {
-    cosmos.base.v1beta1.Coin from_coin = 1 [(gogoproto.nullable) = false];
-    string to_coin_denom = 2;
-    uint64 pool_id = 3;
-    string max_price_impact = 4 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-    string twap_price = 5 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
+  cosmos.base.v1beta1.Coin from_coin = 1 [(gogoproto.nullable) = false];
+  string to_coin_denom = 2;
+  uint64 pool_id = 3;
+  string max_price_impact = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
+  string twap_price = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message EstimateTradeBasedOnPriceImpactResponse {
-    cosmos.base.v1beta1.Coin input_coin = 1 [(gogoproto.nullable) = false];
-    cosmos.base.v1beta1.Coin output_coin = 2 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin input_coin = 1 [(gogoproto.nullable) = false];
+  cosmos.base.v1beta1.Coin output_coin = 2 [(gogoproto.nullable) = false];
 }

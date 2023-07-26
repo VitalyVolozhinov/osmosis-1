@@ -10,6 +10,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
+import "osmosis/lockup/lock.proto";
 
 option go_package = "github.com/osmosis-labs/osmosis/v16/x/concentrated-liquidity/model";
 
@@ -58,9 +59,13 @@ message FullPositionBreakdown {
     (gogoproto.moretags) = "yaml:\"claimable_incentives\"",
     (gogoproto.nullable) = false
   ];
-  repeated cosmos.base.v1beta1.DecCoin forfeited_incentives = 6 [
-    (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.DecCoins",
+  repeated cosmos.base.v1beta1.Coin forfeited_incentives = 6 [
     (gogoproto.moretags) = "yaml:\"forfeited_incentives\"",
     (gogoproto.nullable) = false
   ];
+}
+
+message PositionWithPeriodLock {
+  Position position = 1 [ (gogoproto.nullable) = false ];
+  osmosis.lockup.PeriodLock locks = 2 [ (gogoproto.nullable) = false ];
 }

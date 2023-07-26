@@ -10,6 +10,7 @@ import (
 	cltypes "github.com/osmosis-labs/osmosis/v16/x/concentrated-liquidity/types"
 	"github.com/osmosis-labs/osmosis/v16/x/gamm/pool-models/balancer"
 	gammtypes "github.com/osmosis-labs/osmosis/v16/x/gamm/types"
+	gammmigration "github.com/osmosis-labs/osmosis/v16/x/gamm/types/migration"
 	lockupkeeper "github.com/osmosis-labs/osmosis/v16/x/lockup/keeper"
 	lockuptypes "github.com/osmosis-labs/osmosis/v16/x/lockup/types"
 	"github.com/osmosis-labs/osmosis/v16/x/superfluid/keeper"
@@ -500,7 +501,7 @@ func (s *KeeperTestSuite) TestUnlockAndMigrateSharesToFullRangeConcentratedPosit
 	clPool := s.PrepareCustomConcentratedPool(s.TestAccs[0], defaultPoolAssets[0].Token.Denom, defaultPoolAssets[1].Token.Denom, 1, sdk.ZeroDec())
 
 	// Set migration link between the balancer and concentrated pool
-	migrationRecord := gammtypes.MigrationRecords{BalancerToConcentratedPoolLinks: []gammtypes.BalancerToConcentratedPoolLink{
+	migrationRecord := gammmigration.MigrationRecords{BalancerToConcentratedPoolLinks: []gammmigration.BalancerToConcentratedPoolLink{
 		{BalancerPoolId: balancerPool.GetId(), ClPoolId: clPool.GetId()},
 	}}
 	s.App.GAMMKeeper.OverwriteMigrationRecordsAndRedirectDistrRecords(s.Ctx, migrationRecord)
@@ -523,7 +524,7 @@ func (s *KeeperTestSuite) TestUnlockAndMigrateSharesToFullRangeConcentratedPosit
 	sender, err := sdk.AccAddressFromBech32(locks[0].Owner)
 	s.Require().NoError(err)
 	_, err = msgServer.UnlockAndMigrateSharesToFullRangeConcentratedPosition(sdk.WrapSDKContext(s.Ctx),
-		types.NewMsgUnlockAndMigrateSharesToFullRangeConcentratedPosition(sender, locks[0].ID, locks[0].Coins[0]))
+		types.NewMsgUnlockAndMigrateSharesToFullRangeConcentratedPosition(sender, int64(locks[0].ID), locks[0].Coins[0]))
 	s.Require().NoError(err)
 
 	// Asset event emitted

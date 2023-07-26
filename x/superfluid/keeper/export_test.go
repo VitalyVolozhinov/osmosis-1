@@ -6,7 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	lockuptypes "github.com/osmosis-labs/osmosis/v16/x/lockup/types"
-	"github.com/osmosis-labs/osmosis/v16/x/superfluid/types"
 )
 
 var (
@@ -34,11 +33,11 @@ func (k Keeper) MigrateNonSuperfluidLockBalancerToConcentrated(ctx sdk.Context, 
 	return k.migrateNonSuperfluidLockBalancerToConcentrated(ctx, sender, lockId, sharesToMigrate, tokenOutMins)
 }
 
-func (k Keeper) ValidateSharesToMigrateUnlockAndExitBalancerPool(ctx sdk.Context, sender sdk.AccAddress, poolIdLeaving uint64, lock *lockuptypes.PeriodLock, sharesToMigrate sdk.Coin, tokenOutMins sdk.Coins, remainingLockTime time.Duration) (exitCoins sdk.Coins, err error) {
-	return k.validateSharesToMigrateUnlockAndExitBalancerPool(ctx, sender, poolIdLeaving, lock, sharesToMigrate, tokenOutMins, remainingLockTime)
+func (k Keeper) ValidateSharesToMigrateUnlockAndExitBalancerPool(ctx sdk.Context, sender sdk.AccAddress, poolIdLeaving uint64, lock *lockuptypes.PeriodLock, sharesToMigrate sdk.Coin, tokenOutMins sdk.Coins) (exitCoins sdk.Coins, err error) {
+	return k.validateSharesToMigrateUnlockAndExitBalancerPool(ctx, sender, poolIdLeaving, lock, sharesToMigrate, tokenOutMins)
 }
 
-func (k Keeper) RouteMigration(ctx sdk.Context, sender sdk.AccAddress, lockId uint64, sharesToMigrate sdk.Coin) (synthLockBeforeMigration lockuptypes.SyntheticLock, migrationType MigrationType, err error) {
+func (k Keeper) RouteMigration(ctx sdk.Context, sender sdk.AccAddress, lockId int64, sharesToMigrate sdk.Coin) (synthLockBeforeMigration lockuptypes.SyntheticLock, migrationType MigrationType, err error) {
 	return k.routeMigration(ctx, sender, lockId, sharesToMigrate)
 }
 
@@ -58,6 +57,6 @@ func (k Keeper) GetExistingLockRemainingDuration(ctx sdk.Context, lock *lockupty
 	return k.getExistingLockRemainingDuration(ctx, lock)
 }
 
-func (k Keeper) PartialSuperfluidUndelegateToConcentratedPosition(ctx sdk.Context, sender string, lockID uint64, amountToUndelegate sdk.Coin) (intermediaryAcc types.SuperfluidIntermediaryAccount, newlock *lockuptypes.PeriodLock, err error) {
-	return k.partialSuperfluidUndelegateToConcentratedPosition(ctx, sender, lockID, amountToUndelegate)
+func (k Keeper) DistributeSuperfluidGauges(ctx sdk.Context) {
+	k.distributeSuperfluidGauges(ctx)
 }
