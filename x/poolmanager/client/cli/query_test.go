@@ -126,6 +126,21 @@ func (s *QueryTestSuite) TestSimplifiedQueries() {
 		"/osmosis.poolmanager.v1beta1.Query/EstimateSinglePoolSwapExactAmountOut", simplifiedSwapOut, output4)
 	s.Require().NoError(err)
 	s.Require().Equal(output3, output4)
+
+	tradeImpact := &poolmanagerqueryproto.EstimateTradeBasedOnPriceImpactRequest{
+		FromCoin: sdk.Coin{
+			Denom:  "bar",
+			Amount: sdk.NewInt(100),
+		},
+		ToCoinDenom:    "baz",
+		PoolId:         1,
+		MaxPriceImpact: sdk.MustNewDecFromStr("0.01"),
+		TwapPrice:      sdk.MustNewDecFromStr("0.02"),
+	}
+	output5 := &poolmanagerqueryproto.EstimateTradeBasedOnPriceImpactResponse{}
+	err = s.QueryHelper.Invoke(gocontext.Background(),
+		"/osmosis.poolmanager.v1beta1.Query/EstimateTradeBasedOnPriceImpact", tradeImpact, output5)
+	s.Require().NoError(err)
 }
 
 func TestQueryTestSuite(t *testing.T) {
